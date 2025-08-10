@@ -172,4 +172,12 @@
 
 .error-card {
   background-color: #ffebee;
+  margin-bottom: 12px;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }

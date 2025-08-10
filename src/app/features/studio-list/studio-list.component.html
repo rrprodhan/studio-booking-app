@@ -29,8 +29,10 @@
 <ng-container *ngIf="locationError">
   <mat-card class="error-card">
     <mat-card-content>
-      <mat-icon color="warn">error</mat-icon>
-      {{ locationError }}
+      <div class="error-message">
+        <mat-icon color="warn">error</mat-icon>
+        {{ locationError }}
+      </div>
     </mat-card-content>
   </mat-card>
 </ng-container>
