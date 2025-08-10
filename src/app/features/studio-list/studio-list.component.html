@@ -1,0 +1,91 @@
+<mat-toolbar color="primary">
+  <span>Studio Booking</span>
+
+  <div class="search-container">
+    <mat-form-field subscriptSizing="dynamic" appearance="fill">
+      <mat-label>Search by City/Area</mat-label>
+      <input matInput [(ngModel)]="searchTerm" placeholder="Enter area" />
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <button
+      class="studios-near-me-button"
+      mat-raised-button
+      color="accent"
+      (click)="searchByRadius(10)"
+    >
+      <mat-icon>location_on</mat-icon>
+      Studios Near Me (10KM)
+    </button>
+  </div>
+</mat-toolbar>
+
+<ng-container *ngIf="isLoading">
+  <div class="loading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="locationError">
+  <mat-card class="error-card">
+    <mat-card-content>
+      <mat-icon color="warn">error</mat-icon>
+      {{ locationError }}
+    </mat-card-content>
+  </mat-card>
+</ng-container>
+
+<!-- Use ratio-based rowHeight and add inner padding -->
+<mat-grid-list
+  [cols]="gridCols"
+  [rowHeight]="rowHeight"
+  gutterSize="15px"
+  *ngIf="studios$ | async as studios"
+>
+  <mat-grid-tile *ngFor="let studio of studios | studioFilter: searchTerm">
+    <div class="tile-content">
+      <mat-card class="studio-card">
+        <img
+          class="card-image"
+          mat-card-image
+          src="../../../assets/images/studio.jpg"
+          alt="{{ studio.Name }}"
+        />
+        <mat-card-content class="card-content">
+          <h3 class="studio-name">{{ studio.Name }}</h3>
+          <p class="type-location">
+            <mat-icon>category</mat-icon> {{ studio.Type }} •
+            <mat-icon>location_on</mat-icon> {{ studio.Location.Area }}, {{
+            studio.Location.City }}
+          </p>
+
+          <div class="amenities">
+            <mat-chip *ngFor="let amenity of studio.Amenities | slice:0:3">
+              {{ amenity }}
+            </mat-chip>
+            <span *ngIf="studio.Amenities.length > 3" class="more-amenities">
+              +{{ studio.Amenities.length - 3 }} more
+            </span>
+          </div>
+
+          <div class="price-rating">
+            <span class="price"
+              >{{ studio.PricePerHour |
+              currency:studio.Currency:'symbol':'1.0-0' }}/hr</span
+            >
+            <app-rating [rating]="studio.Rating"></app-rating>
+          </div>
+        </mat-card-content>
+        <mat-card-actions class="card-actions">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="openBookingDialog(studio)"
+          >
+            BOOK NOW
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

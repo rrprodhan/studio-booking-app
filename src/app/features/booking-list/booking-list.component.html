@@ -1,0 +1,48 @@
+<mat-toolbar color="primary">
+  <span>My Bookings</span>
+  <span class="spacer"></span>
+  <button class="back-to-studios-button" mat-button routerLink="/">
+    Back to Studios
+  </button>
+</mat-toolbar>
+<mat-card class="no-bookings" *ngIf="(bookings$ | async)?.length === 0">
+  <mat-card-content>
+    <mat-icon>calendar_today</mat-icon>
+    <h3>No bookings yet</h3>
+    <p>Book your first studio session to see it here</p>
+    <button mat-raised-button color="primary" routerLink="/">
+      Browse Studios
+    </button>
+  </mat-card-content>
+</mat-card>
+
+<mat-list *ngIf="(bookings$ | async)?.length">
+  <mat-list-item *ngFor="let booking of bookings$ | async" class="booking-item">
+    <div matListItemIcon class="date-badge">
+      <span class="day">{{ formatDate(booking.date) | date:'d' }}</span>
+      <span class="month">{{ formatDate(booking.date) | date:'MMM' }}</span>
+    </div>
+
+    <div class="booking-details">
+      <div class="studio-name">{{ booking.studio.Name }}</div>
+      <div class="studio-type-location">
+        <span class="studio-type">{{ booking.studio.Type }}</span>
+        •
+        <span class="studio-location">
+          {{ booking.studio.Location.Area }}, {{ booking.studio.Location.City }}
+        </span>
+      </div>
+      <div class="user-info">
+        {{ booking.userName }} • {{ booking.userEmail }}
+      </div>
+      <div class="time-info">
+        {{ booking.startTime | timeFormat }} - {{ booking.endTime | timeFormat
+        }} {{ booking.date | customDate }}
+      </div>
+    </div>
+
+    <button mat-icon-button (click)="cancelBooking(booking.id)" matListItemMeta>
+      <mat-icon>delete</mat-icon>
+    </button>
+  </mat-list-item>
+</mat-list>

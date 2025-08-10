@@ -1,0 +1,69 @@
+<h2 mat-dialog-title>Book {{ data.studio.Name }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="bookingForm">
+    <mat-form-field appearance="fill">
+      <mat-label>Booking Date</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [min]="minDate"
+        formControlName="date"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="bookingForm.get('date')?.hasError('required')">
+        Date is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" *ngIf="timeSlots.length">
+      <mat-label>Time Slot</mat-label>
+      <mat-select formControlName="timeSlot">
+        <mat-option *ngFor="let slot of timeSlots" [value]="slot">
+          {{ slot }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="bookingForm.get('timeSlot')?.hasError('required')">
+        Time slot is required
+      </mat-error>
+    </mat-form-field>
+
+    <div
+      *ngIf="!timeSlots.length && bookingForm.get('date')?.value"
+      class="no-slots"
+    >
+      <mat-icon>schedule</mat-icon>
+      No available time slots for this date
+    </div>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Your Name</mat-label>
+      <input matInput formControlName="userName" />
+      <mat-error *ngIf="bookingForm.get('userName')?.hasError('required')">
+        Name is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="userEmail" type="email" />
+      <mat-error *ngIf="bookingForm.get('userEmail')?.hasError('required')">
+        Email is required
+      </mat-error>
+      <mat-error *ngIf="bookingForm.get('userEmail')?.hasError('email')">
+        Please enter a valid email
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="submitBooking()"
+    [disabled]="bookingForm.invalid || !timeSlots.length"
+  >
+    Confirm Booking
+  </button>
+</mat-dialog-actions>
